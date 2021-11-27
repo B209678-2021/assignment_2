@@ -1,4 +1,4 @@
-#Shebang line
+ç#Shebang line
 #!/usr/local/bin/python3
 
 #Import Modules
@@ -27,10 +27,18 @@ user(*list(questions.values()))
 
 
 #Retrieve the sequences using Esearch and Efetch from EDirect
-search_command = "esearch -db protein -query '{0}[Organism] AND {1}[Protein] NOT PARTIAL' | efetch -format fasta > {0}.{1}.fa ".format(questions["taxonomic_group"],questions["protein"])
-subprocess.call(search_command, shell = True)
+#Ask the user the user if they want Partial or full sequences
 
+sequence_full = input("Do you want partial sequences?[YES|NO\n").upper()
 
+if sequence_full == "YES":
+        search_command = "esearch -db protein -query '{0}[Organism] AND {1}[Protein]' | efetch -format fasta > {0}.{1}.fa ".format(questions["taxonomic_group"],questions["protein"])
+        subprocess.call(search_command, shell = True)
+elif sequence_full == "NO":
+        search_command = "esearch -db protein -query '{0}[Organism] AND {1}[Protein] NOT PARTIAL' | efetch -format fasta > {0}.{1}.fa ".format(questions["taxonomic_group"],questions["protein"])
+        subprocess.call(search_command, shell = True)
+else:
+     	sys.exit()
 
 #Limit the number of sequences
 
@@ -44,16 +52,17 @@ print(seq_count)
 #Clustalo
 subprocess.call("clustalo -i {0}.{1}.fa -o {0}.{1}.msf -t protein --outfmt msf -v".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
+#Plotcon
+#Plot the protein conservation and save the graph
+subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize 4 -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+
+#Plot the protein conservation and save	the graph
+subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize 4 -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 
 
-#Make a plotcon 
-#Ps saves graph
-#x11 prints to the screen
-#plotcon -sformat msf glu.align.msf -winsize 10 -graph ps
-#plotcon -sformat msf glu.align.msf -winsize 10 -graph x11
-
-
+#Split all the proteins into individual sequences
+subprocess("seqretsplit {0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]), shell = True) 
 
 
 
