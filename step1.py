@@ -91,7 +91,7 @@ if info_align = "YES":
 elif info_align = "NO":
 	print("Continuing anyway")
 else:
-	print("Continue anyway")
+	print("Continuing anyway")
 
 #Plotcon
 #Ask the user if they would like to create a conservation plot of the protein sequences 
