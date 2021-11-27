@@ -119,19 +119,8 @@ else:
 
 #Scan the PROSITE database
 #Split all the dataset into individual sequences
-subprocess("seqretsplit {0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]), shell = True) 
+subprocess("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_group"],questions["protein"]), shell = True) 
 
 #Run Prosite on all the individual files 
-
-
 prosite_command ="for FILE in *.fasta; do patmatmotifs -full -sequence $FILE  -sformat1 fasta  "$FILE".patmatmotifs; done"
 subprocess.call(prosite_command, shell = True)
-
-#Scan the PROSITE database 
-
-#Prosite files located 
-/localdisk/software.local/EMBOSS-6.6.0/share/EMBOSS/data/PROSITE/
-
-
-
-
