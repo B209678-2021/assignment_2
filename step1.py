@@ -63,9 +63,9 @@ else:
 
 	
 #Remove redundant sequences 
-redundant = input("Would you like to remove redundant sequences?"YES|NO\n").upper()
+#redundant = input("Would you like to remove redundant sequences?"YES|NO\n").upper()
 
-if redundant == "YES":
+#if redundant == "YES":
 	subpro
 
 #Align multiple retrieved sequences using Clustalo
@@ -81,6 +81,17 @@ elif align == "NO":
 else:
 	print("Session Ended")
 	sys.exit
+
+#Give basic alignment information
+#Ask the user would they like to see basic align information
+info_align = input("Would you like to see the basic alignment information?[YES|NO]").upper()
+
+if info_align = "YES":
+	subprocess.call("infoalign {0}.{1}.fa {0}.{1}.infoalign.fa".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+elif info_align = "NO":
+	print("Continuing anyway")
+else:
+	print("Continue anyway")
 
 #Plotcon
 #Ask the user if they would like to create a conservation plot of the protein sequences 
@@ -106,11 +117,8 @@ else:
 	print("Contiuing anyways")
 
 
-
-
-
-
-#Split all the proteins into individual sequences
+#Scan the PROSITE database
+#Split all the dataset into individual sequences
 subprocess("seqretsplit {0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]), shell = True) 
 
 
