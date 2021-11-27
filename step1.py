@@ -27,28 +27,25 @@ user(*list(questions.values()))
 
 
 #Retrieve the sequences using Esearch and Efetch from EDirect
-search_command = "esearch -db protein -query '{0}[Organism] AND {1}[Protein] NOT PARTIAL' | efetch -format fasta > {0}.{1}.fasta ".format(questions["taxonomic"],questions["protein"])
+search_command = "esearch -db protein -query '{0}[Organism] AND {1}[Protein] NOT PARTIAL' | efetch -format fasta > {0}.{1}.fa ".format(questions["taxonomic_group"],questions["protein"])
 subprocess.call(search_command, shell = True)
 
 
 
 #Limit the number of sequences
 
+#Count the number of sequences present
+file = open("{0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]))
+file_contents = file.read()
+seq_count = file_contents.count(">")
+print(seq_count)
+
+
+#Clustalo
+subprocess.call("clustalo -i {0}.{1}.fa -o {0}.{1}.msf -t protein --outfmt msf -v".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 
 
-
-#Align multiple sequences in clustalo
-#Convert from fasta to msf format for the plotcon step
-#clustalo_command = r'clustalo -i help.fa -o glu.align.msf -t4  protein --outfmt msf -v'
-#subprocess.call(clustalo_command, shell=True)
-
-#clustalo -i help.fa -o glu.align.msf -t4  protein --outfmt msf -v
-data = open("{}.search.fa".format(questions["taxonomic_group"])).read()
-#clustalo_command = r'clustalo -i {0}.search.fa -o {0}{1}.msf -t protein --outfmt msf -v'
-#subprocess.call(clustalo_command, shell = True)
-
-subprocess.call("clustalo -i {0}.search.fa -o {0}{1}.msf -t protein --outfmt msf -v".format(questions["taxonomic_group"],questions["protein"], shell = True)
 
 #Make a plotcon 
 #Ps saves graph
