@@ -1,4 +1,4 @@
-ç#Shebang line
+#Shebang line
 #!/usr/local/bin/python3
 
 #Import Modules
@@ -38,26 +38,75 @@ elif sequence_full == "NO":
         search_command = "esearch -db protein -query '{0}[Organism] AND {1}[Protein] NOT PARTIAL' | efetch -format fasta > {0}.{1}.fa ".format(questions["taxonomic_group"],questions["protein"])
         subprocess.call(search_command, shell = True)
 else:
-     	sys.exit()
+     	print("Session ended")
+	sys.exit()
+
 
 #Limit the number of sequences
 
-#Count the number of sequences present
-file = open("{0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]))
-file_contents = file.read()
-seq_count = file_contents.count(">")
-print(seq_count)
+#Ask the user if they would like to see how many sequences were downloaded
+count = input("Would you like to see how many sequences were downloaded?[YES|NO]").upper()
 
+if count == "YES":
 
-#Clustalo
-subprocess.call("clustalo -i {0}.{1}.fa -o {0}.{1}.msf -t protein --outfmt msf -v".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	#Count the number of sequences present
+	file = open("{0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]))
+	file_contents = file.read()
+	seq_count = file_contents.count(">")
+	print(seq_count)
+
+elif count == "NO":
+	print("Continuing anyway")
+
+else:
+	print("Continuing anyway")
+
+	
+#Remove redundant sequences 
+redundant = input("Would you like to remove redundant sequences?"YES|NO\n").upper()
+
+if redundant == "YES":
+	subpro
+
+#Align multiple retrieved sequences using Clustalo
+#Ask the user if they would like to align the protein sequences
+align = input("Would you like to align the protein sequences?[YES|NO]").upper()
+
+if align == "YES":
+	subprocess.call("clustalo -i {0}.{1}.fa -o {0}.{1}.msf -t protein --outfmt msf -v".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+
+elif align == "NO":
+	print("Session Ended")
+	sys.exit()
+else:
+	print("Session Ended")
+	sys.exit
 
 #Plotcon
-#Plot the protein conservation and save the graph
-subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize 4 -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+#Ask the user if they would like to create a conservation plot of the protein sequences 
+plot = input("Would you like to create a conservation plot of the protein sequences?[YES|NO]").upper()
 
-#Plot the protein conservation and save	the graph
-subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize 4 -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+if plot == "YES":
+	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize 4 -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+elif plot == "NO":
+	print("Session Ended")
+	sys.exit()
+else:
+	print("Session Ended")
+	sys.exit()
+
+#Ask the user if they would like to view a conservation plot of the protein sequences	
+view = input("Would you	like to view a conservation plot of the protein sequences?[YES|NO]").upper()
+
+if view == "YES"
+	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize 4 -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+elif view == "NO"
+	print("Continuing anyway")
+else:
+	print("Contiuing anyways")
+
+
+
 
 
 
