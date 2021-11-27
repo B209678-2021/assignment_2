@@ -44,7 +44,11 @@ subprocess.call(search_command, shell = True)
 #subprocess.call(clustalo_command, shell=True)
 
 #clustalo -i help.fa -o glu.align.msf -t4  protein --outfmt msf -v
+data = open("{}.search.fa".format(questions["taxonomic_group"])).read()
+#clustalo_command = r'clustalo -i {0}.search.fa -o {0}{1}.msf -t protein --outfmt msf -v'
+#subprocess.call(clustalo_command, shell = True)
 
+subprocess.call("clustalo -i {0}.search.fa -o {0}{1}.msf -t protein --outfmt msf -v".format(questions["taxonomic_group"],questions["protein"], shell = True)
 
 #Make a plotcon 
 #Ps saves graph
