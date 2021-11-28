@@ -155,7 +155,7 @@ os.environ['ws'] = windowsize
 
 #Make a plotcon graph and save it
 if plot == "YES":
-	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 #Do not save the plotcon graph and continue on
 elif plot == "NO":
@@ -171,7 +171,7 @@ view = input("Would you	like to view a conservation plot of the protein sequence
 
 #Show the plotcon graph
 if view == "YES":
-	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 #Do not show the plotcon graph
 elif view == "NO":
@@ -189,21 +189,18 @@ subprocess.call("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_g
 #Ask the user would they like to ignore simple patterns
 simple = input("Would you like to ignore simple patterns such as post-translational modification sites?[YES|NO]\n").upper()
 
-
 #Ignore the simple patterns
-#if simple == "YES":
-	#prosite_command = "for file in *.fasta; do patmatmotifs -noprune -sequence $file  -sformat1 fasta  "$(basename "$file" .fasta)".patmatmotifs; done"
-	#subprocess.call(prosite_command, shell = True)
 
-#Give full sequences
-#elif simple == "NO":
-	#prosite_command = "for file in *.fasta; do patmatmotifs -full -sequence $file  -sformat1 fasta  "$(basename "$file" .fasta)".patmatmotifs; done"
-	#subprocess.call(prosite_command, shell = True)
+if simple=="YES":
+	prosite_command= 'for file in *.fasta; do patmatmotifs -noprune -sequence $file -sformat1 fasta "$(basename "$file".fasta)".patmatmotifs; done'
+	subprocess.call(prosite_command,shell=True)
 
-#Anything else
-#else:
-	#print("Session Ended")
-	#sys.exit()
+elif simple=="NO":
+	prosite_command= 'for file in *.fasta; do patmatmotifs -norprune -sequence $file -sformat1 fasta "$(basename "$file".fasta)".patmatmotifs; done'
+	subprocess.call(prosite_command,shell=True)
+
+else:
+	print("Continuing anyways")
 
 
 #End Session
