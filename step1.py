@@ -29,7 +29,7 @@ user(*list(questions.values()))
 #Retrieve the sequences using Esearch and Efetch from EDirect
 #Ask the user the user if they want Partial or full sequences
 
-sequence_full = input("Do you want partial sequences?[YES|NO\n").upper()
+sequence_full = input("Do you want partial sequences?[YES|NO]\n").upper()
 
 if sequence_full == "YES":
         search_command = "esearch -db protein -query '{0}[Organism] AND {1}[Protein]' | efetch -format fasta > {0}.{1}.fa ".format(questions["taxonomic_group"],questions["protein"])
@@ -45,7 +45,7 @@ else:
 #Limit the number of sequences
 
 #Ask the user if they would like to see how many sequences were downloaded
-count = input("Would you like to see how many sequences were downloaded?[YES|NO]").upper()
+count = input("Would you like to see how many sequences were downloaded?[YES|NO]\n").upper()
 
 if count == "YES":
 
@@ -70,9 +70,10 @@ else:
 
 #Align multiple retrieved sequences using Clustalo
 #Ask the user if they would like to align the protein sequences
-align = input("Would you like to align the protein sequences?[YES|NO]").upper()
+align = input("Would you like to align the protein sequences?[YES|NO]\n").upper()
 
 if align == "YES":
+	#Run clustalo and change fasta format to msf format for plotcon step
 	subprocess.call("clustalo -i {0}.{1}.fa -o {0}.{1}.msf -t protein --outfmt msf -v".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 elif align == "NO":
@@ -84,7 +85,7 @@ else:
 
 #Give basic alignment information
 #Ask the user would they like to see basic align information
-info_align = input("Would you like to see the basic alignment information?[YES|NO]").upper()
+info_align = input("Would you like to see the basic alignment information?[YES|NO]\n").upper()
 
 if info_align = "YES":
 	subprocess.call("infoalign {0}.{1}.fa {0}.{1}.infoalign.fa".format(questions["taxonomic_group"],questions["protein"]), shell = True)
@@ -95,7 +96,7 @@ else:
 
 #Plotcon
 #Ask the user if they would like to create a conservation plot of the protein sequences 
-plot = input("Would you like to create a conservation plot of the protein sequences?[YES|NO]").upper()
+plot = input("Would you like to create a conservation plot of the protein sequences?[YES|NO]\n").upper()
 
 if plot == "YES":
 	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize 4 -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
@@ -107,7 +108,7 @@ else:
 	sys.exit()
 
 #Ask the user if they would like to view a conservation plot of the protein sequences	
-view = input("Would you	like to view a conservation plot of the protein sequences?[YES|NO]").upper()
+view = input("Would you	like to view a conservation plot of the protein sequences?[YES|NO]\n").upper()
 
 if view == "YES"
 	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize 4 -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
@@ -124,3 +125,5 @@ subprocess("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_group"
 #Run Prosite on all the individual files 
 prosite_command ="for FILE in *.fasta; do patmatmotifs -full -sequence $FILE  -sformat1 fasta  "$FILE".patmatmotifs; done"
 subprocess.call(prosite_command, shell = True)
+
+
