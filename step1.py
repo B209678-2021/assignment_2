@@ -2,7 +2,7 @@
 #!/usr/local/bin/python3
 
 #Import Modules
-import os, sys, shutil, subprocess
+import os, sys, shutil, subprocess, re
 print("\nImported os, sys, shutil and subprocess\n")
 
 os.system('clear')
@@ -44,11 +44,8 @@ elif sequence_full == "NO":
 
 #Any other input
 else:
-     	print("Session ended")
-	sys.exit()
+	print("Session ended")
 
-
-#Limit the number of sequences
 
 #Ask the user if they would like to see how many sequences were downloaded
 count = input("Would you like to see how many sequences were downloaded?[YES|NO]\n").upper()
@@ -60,7 +57,7 @@ if count == "YES":
 	file = open("{0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]))
 	file_contents = file.read()
 	seq_count = file_contents.count(">")
-	print("The number of sequences is downloaded", seq_count)
+	print("The number of sequences downloaded is", seq_count)
 
 #Do not print the number of sequences present
 elif count == "NO":
@@ -70,16 +67,35 @@ elif count == "NO":
 else:
 	print("Continuing anyway")
 
+#Number of unique species present
+#Ask the user would they like to see the number of unique species retrieved
+species = input("Would you like to see the number of unique species retrieved?[YES|NO]\n").upper()
+
+#User answers yes
+if species == "YES":
+	file = open("{0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]))
+	file_contents = file.read()
+	unique = set(re.findall('\[(.*?)\]',file_contents))
+	print(len(unique))
+
+#User answers no
+elif species == "NO":
+	print("Continuing anyways")
+
+#User answers anything else
+else:
+	print("Continuing anyways")
+
 #Provide the user with basic sequence info
 #Ask the user if they would like to see the basic sequence info
 basic_info = input("Would you like to see the basic sequence information for the proteins downloaded?[YES|NO]\n").upper()
 
 #User answers yes
 if basic_info == "YES":
-	subprocess.call("infoseq {0}.{1}.fa > {0}.{1}.infoseq.fa"..format(questions["taxonomic_group"],questions["protein"]), shell = True)
-	file_info = open("{0}.{1}.infoseq.fa")
+	subprocess.call("infoseq {0}.{1}.fa > {0}.{1}.infoseq.fa".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	file_info = open("{0}.{1}.infoseq.fa".format(questions["taxonomic_group"],questions["protein"]))
 	file_info_contents = file_info.read()
-	print("file_info_contents")	
+	print(file_info_contents)	
 
 
 #User answers no
@@ -114,15 +130,15 @@ else:
 #Ask the user would they like to see basic align information
 info_align = input("Would you like to see the basic alignment information?[YES|NO]\n").upper()
 
-if info_align = "YES":
+if info_align == "YES":
 	subprocess.call("infoalign {0}.{1}.fa {0}.{1}.infoalign.fa".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 	#Print the output of the infoalign file
-	file1 = open("{0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]))
+	file1 = open("{0}.{1}.infoalign.fa".format(questions["taxonomic_group"],questions["protein"]))
 	file1_contents = file1.read()
 	print(file1_contents)
 
 #Continue on without doing infoalign
-elif info_align = "NO":
+elif info_align == "NO":
 	print("Continuing anyway")
 
 #For any other input, continue on 
@@ -135,11 +151,11 @@ else:
 plot = input("Would you like to create a conservation plot of the protein sequences?[YES|NO]\n").upper()
 
 windowsize = input("Please specify a window size to create the plot. Please see manual for description of windowsize: " )
-os.environ['ws'] = windowsize 
+os.environ['ws'] = windowsize
 
-#Make a plotcon graph and save it 
+#Make a plotcon graph and save it
 if plot == "YES":
-	subprocess.call("plotcon -sformat msf {0}.{1}.msf $ws  -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 #Do not save the plotcon graph and continue on
 elif plot == "NO":
@@ -150,44 +166,43 @@ else:
 	print("Continuing anyways")
 	
 
-#Ask the user if they would like to view a conservation plot of the protein sequences	
+#Ask the user if they would like to view a conservation plot of the protein sequences
 view = input("Would you	like to view a conservation plot of the protein sequences?[YES|NO]\n").upper()
 
 #Show the plotcon graph
-if view == "YES"
-	subprocess.call("plotcon -sformat msf {0}.{1}.msf $ws -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+if view == "YES":
+	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 #Do not show the plotcon graph
-elif view == "NO"
+elif view == "NO":
 	print("Continuing anyway")
 
 #Any other input
 else:
 	print("Continuing anyways")
 
-
 #Scan the PROSITE database
 #Split the dataset into individual sequences for patmatmotifs
-subprocess.call("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_group"],questions["protein"]), shell = True) 
+subprocess.call("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
-#Run Prosite on all the individual files 
-#Ask the user would they like to ignore simple patterns 
+#Run Prosite on all the individual files
+#Ask the user would they like to ignore simple patterns
 simple = input("Would you like to ignore simple patterns such as post-translational modification sites?[YES|NO]\n").upper()
 
 #Ignore the simple patterns
-if simple == "YES":
-	prosite_command ="for file in *.fasta; do patmatmotifs -noprune -sequence $file  -sformat1 fasta  "(basename "$file .fasta)".patmatmotifs; done"
-	subprocess.call(prosite_command, shell = True)
+#if simple == "YES":
+	#prosite_command = "for file in *.fasta; do patmatmotifs -noprune -sequence $file  -sformat1 fasta  "$(basename "$file" .fasta)".patmatmotifs; done"
+	#subprocess.call(prosite_command, shell = True)
 
 #Give full sequences
-elif simple == "NO":
-	prosite_command ="for file in *.fasta; do patmatmotifs -full -sequence $file  -sformat1 fasta  "(basename "$file .fasta)".patmatmotifs; done"
-	subprocess.call(prosite_command, shell = True)
+#elif simple == "NO":
+	#prosite_command = "for file in *.fasta; do patmatmotifs -full -sequence $file  -sformat1 fasta  "$(basename "$file" .fasta)".patmatmotifs; done"
+	#subprocess.call(prosite_command, shell = True)
 
 #Anything else
-else:
-	print("Session Ended")
-	sys.exit()
+#else:
+	#print("Session Ended")
+	#sys.exit()
 
 
 #End Session
