@@ -45,7 +45,7 @@ elif sequence_full == "NO":
 #Any other input
 else:
 	print("Session ended")
-
+	sys.exit()
 
 #Ask the user if they would like to see how many sequences were downloaded
 count = input("Would you like to see how many sequences were downloaded?[YES|NO]\n").upper()
@@ -188,6 +188,7 @@ subprocess.call("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_g
 #Run Prosite on all the individual files
 #Ask the user would they like to ignore simple patterns
 simple = input("Would you like to ignore simple patterns such as post-translational modification sites?[YES|NO]\n").upper()
+
 
 #Ignore the simple patterns
 #if simple == "YES":
