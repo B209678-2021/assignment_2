@@ -123,7 +123,20 @@ else:
 subprocess("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_group"],questions["protein"]), shell = True) 
 
 #Run Prosite on all the individual files 
-prosite_command ="for FILE in *.fasta; do patmatmotifs -full -sequence $FILE  -sformat1 fasta  "$FILE".patmatmotifs; done"
-subprocess.call(prosite_command, shell = True)
+#Ask the user would they like to ignore simple patterns 
+simple = input("Would you like to ignore simple patterns such as post-translational modification sites?[YES|NO]\n").upper()
+
+if simple == "YES":
+	prosite_command ="for FILE in *.fasta; do patmatmotifs -noprune -sequence $FILE  -sformat1 fasta  "$FILE".patmatmotifs; done"
+	subprocess(prosite_command, shell = True)
+
+elif simple == "NO":
+	prosite_command ="for file in *.fasta; do patmatmotifs -full -sequence $file  -sformat1 fasta  "$file".patmatmotifs; done"
+	subprocess.call(prosite_command, shell = True)
+
+else:
+	print("Session Ended")
+	sys.exit()
+
 
 
