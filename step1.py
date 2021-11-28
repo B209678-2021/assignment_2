@@ -17,6 +17,7 @@ def user(Protein, Taxonomic_group):
 
 #Store output in an ordered Dictionary
 
+#Ask the user to input a protein and taxonomic group
 questions ={}
 questions["protein"] = input("Please enter protein family:\n")
 questions["taxonomic_group"] = input("Please enter taxonomic group:\n")
@@ -68,6 +69,27 @@ elif count == "NO":
 #Any other input
 else:
 	print("Continuing anyway")
+
+#Provide the user with basic sequence info
+#Ask the user if they would like to see the basic sequence info
+basic_info = input("Would you like to see the basic sequence information for the proteins downloaded?[YES|NO]\n").upper()
+
+#User answers yes
+if basic_info == "YES":
+	subprocess.call("infoseq {0}.{1}.fa > {0}.{1}.infoseq.fa"..format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	file_info = open("{0}.{1}.infoseq.fa")
+	file_info_contents = file_info.read()
+	print("file_info_contents")	
+
+
+#User answers no
+elif basic_info == "NO":
+	print("Continuing anyways")
+
+#User inputs anything else
+else:
+	print("Continuing anyways")
+
 
 #Align multiple retrieved sequences using Clustalo
 #Ask the user if they would like to align the protein sequences
@@ -146,7 +168,7 @@ else:
 
 #Scan the PROSITE database
 #Split the dataset into individual sequences for patmatmotifs
-subprocess("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_group"],questions["protein"]), shell = True) 
+subprocess.call("seqretsplit {0}.{1}.fa seqoutall".format(questions["taxonomic_group"],questions["protein"]), shell = True) 
 
 #Run Prosite on all the individual files 
 #Ask the user would they like to ignore simple patterns 
@@ -155,7 +177,7 @@ simple = input("Would you like to ignore simple patterns such as post-translatio
 #Ignore the simple patterns
 if simple == "YES":
 	prosite_command ="for file in *.fasta; do patmatmotifs -noprune -sequence $file  -sformat1 fasta  "(basename "$file .fasta)".patmatmotifs; done"
-	subprocess(prosite_command, shell = True)
+	subprocess.call(prosite_command, shell = True)
 
 #Give full sequences
 elif simple == "NO":
@@ -169,7 +191,7 @@ else:
 
 
 #End Session
-print("Protein analysis complete. Thank you for you participation")
+print("Protein analysis complete. Thank you for your participation")
 sys.exit()
 
 
