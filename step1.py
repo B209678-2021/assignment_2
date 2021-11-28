@@ -86,6 +86,50 @@ elif species == "NO":
 else:
 	print("Continuing anyways")
 
+#Ask the user if they would like to see the protein count for redundant species
+pro_count = input("Would you like to see the protein count for each species?[YES|NO]\n").upper()
+
+#User answers yes
+if pro_count=="YES":
+	import pandas as pd
+	file = open("{0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]))
+	file_contents = file.read()
+
+	#Seperate sequences into individual sequences
+	protein_sequences = file_contents.split(">")
+
+	#Remove the first element because its empty
+	protein_sequences.remove(protein_sequences[0])
+
+	#Create an empty list with header lines
+	sequence_header = []
+
+	for sequence in protein_sequences:
+		sequence_line = sequence.split("\n")
+		header_line = sequence_line[0]
+		#Only accept it in the format ">accession protein [species name]"
+		if "[" in header_line:
+			sequence_header.append(header_line)
+	#Create a list for the species
+	species_list = []
+	#Extract the species from the headers
+	for header in sequence_header:
+		species = header.split("[")[1][:-1]
+		species_list.append(species)
+	#No. of redundant species and protein count for each
+	species_series = pd.Series(species_list)
+	species_count = species_series.value_counts()
+	print(species_count)
+
+#User answers no
+elif pro_count== "NO":
+	print("Continuing anyways")
+
+#User answers anything else
+else:
+	print("Continuing anyways")
+
+
 #Provide the user with basic sequence info
 #Ask the user if they would like to see the basic sequence info
 basic_info = input("Would you like to see the basic sequence information for the proteins downloaded?[YES|NO]\n").upper()
@@ -111,10 +155,14 @@ else:
 #Ask the user if they would like to align the protein sequences
 align = input("Would you like to align the protein sequences?[YES|NO]\n").upper()
 
+#Ask the user how many threads to run clustalo on
+no_t = input("How many threads would you like to run clustalo on? Please see manual for guidance: ")
+os.environ['no_t'] = no_t
+
 #Run Clustalo
 if align == "YES":
 	#Run clustalo and change fasta format to msf format for plotcon step
-	subprocess.call("clustalo -i {0}.{1}.fa -o {0}.{1}.msf -t protein --outfmt msf -v".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	subprocess.call("clustalo -i {0}.{1}.fa -o {0}.{1}.msf -t protein --outfmt msf --threads=$no_t -v".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 #If no, ended session
 elif align == "NO":
@@ -127,7 +175,7 @@ else:
 	sys.exit
 
 #Give basic alignment information
-#Ask the user would they like to see basic align information
+#Ask the user would they like to see basic alignment information
 info_align = input("Would you like to see the basic alignment information?[YES|NO]\n").upper()
 
 if info_align == "YES":
@@ -155,7 +203,7 @@ os.environ['ws'] = windowsize
 
 #Make a plotcon graph and save it
 if plot == "YES":
-	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 #Do not save the plotcon graph and continue on
 elif plot == "NO":
@@ -171,7 +219,7 @@ view = input("Would you	like to view a conservation plot of the protein sequence
 
 #Show the plotcon graph
 if view == "YES":
-	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph ps".format(questions["taxonomic_group"],questions["protein"]), shell = True)
+	subprocess.call("plotcon -sformat msf {0}.{1}.msf -winsize $ws -graph x11".format(questions["taxonomic_group"],questions["protein"]), shell = True)
 
 #Do not show the plotcon graph
 elif view == "NO":
