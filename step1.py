@@ -59,7 +59,7 @@ if count == "YES":
 	file = open("{0}.{1}.fa".format(questions["taxonomic_group"],questions["protein"]))
 	file_contents = file.read()
 	seq_count = file_contents.count(">")
-	print(seq_count)
+	print("The number of sequences is downloaded", seq_count)
 
 #Do not print the number of sequences present
 elif count == "NO":
@@ -108,7 +108,6 @@ else:
 	print("Continuing anyway")
 
 
-
 #Plotcon
 #Ask the user if they would like to create a conservation plot of the protein sequences 
 plot = input("Would you like to create a conservation plot of the protein sequences?[YES|NO]\n").upper()
@@ -142,7 +141,7 @@ elif view == "NO"
 
 #Any other input
 else:
-	print("Contiuing anyways")
+	print("Continuing anyways")
 
 
 #Scan the PROSITE database
